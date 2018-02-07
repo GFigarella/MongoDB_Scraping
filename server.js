@@ -26,6 +26,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
 
+//Defining handlebars as the view engine
+var exphbs = require("express-handlebars");
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+
 // By default mongoose uses callbacks for async queries, we're setting it to use promises (.then syntax) instead
 // Connect to the Mongo DB
 mongoose.Promise = Promise;
@@ -47,18 +54,20 @@ app.get("/scrape", function(req, res) {
       var result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(this)
-        .children("a")
-        .text();
+      result.title = $(this).children("a").text();
       result.link = $(this)
         .children("a")
         .attr("href");
-
+      result.summary = $(this)
+        .find(":contains('summary')")
+        .text();
+        
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
         .then(function(dbArticle) {
           // View the added result in the console
-          console.log(dbArticle);
+          console.log(result);
+          // console.log(dbArticle);
         })
         .catch(function(err) {
           // If an error occurred, send it to the client
@@ -73,18 +82,22 @@ app.get("/scrape", function(req, res) {
 
 
 // Route for getting all Articles from the db
-app.get("/articles", function(req, res) {
+app.get("/", function(req, res) {
   // TODO: Finish the route so it grabs all of the articles
   db.Article.find({})
   .then(function(dbArticle){
+    console.log(dbArticle);
     // render all the articles back to the client
-    res.json(dbArticle);
+    res.render("index", {articles: dbArticle});
+    // res.json(dbArticle);
   })//promise ends here
   .catch(function(err) {
     // If an error occurs, send the error back to the client
     res.json(err);
   });
 });
+
+
 
 
 

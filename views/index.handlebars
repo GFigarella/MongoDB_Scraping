@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/articles">Saved Articles</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon">Button</span>
+    </button>
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="scrapeButton">Scrape for articles</button>
+</nav>
+
+<div class = container>
+    <div id="articles">
+        {{#each articles}}
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-header">{{this.title}}</div>
+                <div class="card-body">
+                    <p class="card-text">{{this.summary}}</p>
+                    <a href="{{this.link}}" target="blank" class="card-link">Link to article</a>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>
